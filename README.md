@@ -14,7 +14,7 @@ This serves as a repository for all my shell scripts. Still in the process of up
 
 ## Scripts
 
-#### scripts with options/flags/operands - using getopts
+## Scripts with Parameter using "getopts"
 
 Template Script Available :  <a href="https://github.com/praveenprabha/bash-script/blob/master/getopts_script_template.sh" target="_blank">`getopts_script_template.sh`</a>.
 
