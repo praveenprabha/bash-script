@@ -1,5 +1,17 @@
 #! /bin/bash
 
+#####################################################
+# Script Name           : cpu_usage_check.sh
+# Description           : Check CPU Usage on remote machine
+# Author                : Praveen Prabhakaran
+# Email                 : praveentechstuff.prabha@gmail.com
+# Date                  : 23-Sep-2020
+# Version               : 1.0.0
+# Additional Notes      : 
+#####################################################
+
+
+
 ##### Color and Font Customization #####
 
 RED='\033[1;31m'
