@@ -22,7 +22,7 @@ Template Script Available :  <a href="getopts_script_template.sh" target="_blank
   - Includes Optional and Mandatory Arguments
   - Feature to ensure that second flag is not accepted as argument for first flag
 
-```sh
+```python
 root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script# ./cpu_usage_param.sh -h
 
 
@@ -68,7 +68,7 @@ Following considerations are taken into account for these scripts
   - These programs are written for ubuntu machine hence the "ubuntu" user is included in script as a variable. If there is a different user, feel free to modify it.
 
 Scripts Avaialble under this section.
-  - CPU Check
-  - Disk Space Check
-  - Memory Check
-  - Process Check
+  - <a href="nagios_script/cpu_usage_param.sh target="_blank">`CPU Check`</a>
+  - <a href="nagios_script/disk_usage_param.sh" target="_blank">`Disk Space Check`</a>
+  - <a href="nagios_script/memory_usage_param.sh" target="_blank">`Memory Check`</a>
+  - <a href="nagios_script/process_check_param.sh" target="_blank">`Process Check`</a>
