@@ -22,7 +22,7 @@ Template Script Available :  <a href="getopts_script_template.sh" target="_blank
   - Includes Optional and Mandatory Arguments
   - Feature to ensure that second flag is not accepted as argument for first flag
 
-```python
+```shell
 root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script# ./cpu_usage_param.sh -h
 
 
@@ -56,8 +56,7 @@ root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script# ./cpu_usage_par
 
 root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script#
 
-
-```
+````
 
 ## Nagios Script
 
