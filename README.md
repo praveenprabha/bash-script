@@ -24,7 +24,7 @@ Template Script Available :  <a href="getopts_script_template.sh" target="_blank
 
 
 ### using "-h" to get usage information
-```shell
+````shell
 root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script# ./cpu_usage_param.sh -h
 
 
@@ -58,7 +58,7 @@ root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script# ./cpu_usage_par
 
 root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script#
 
-```
+````
 
 ### error when a mandatory argument is missing
 
@@ -111,7 +111,7 @@ Following considerations are taken into account for these scripts
   - These programs are written for ubuntu machine hence the "ubuntu" user is included in script as a variable. If there is a different user, feel free to modify it.
 
 Scripts Avaialble under this section.
-  - <a href="nagios_script/cpu_usage_param.sh target="_blank">`CPU Check`</a>
+  - <a href="nagios_script/cpu_usage_param.sh" target="_blank">`CPU Check`</a>
   - <a href="nagios_script/disk_usage_param.sh" target="_blank">`Disk Space Check`</a>
   - <a href="nagios_script/memory_usage_param.sh" target="_blank">`Memory Check`</a>
   - <a href="nagios_script/process_check_param.sh" target="_blank">`Process Check`</a>
