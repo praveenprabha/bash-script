@@ -1,8 +1,8 @@
 #! /bin/bash
 
 #####################################################
-# Title Name            : CPU Check Bash Script
-# Description           : Script to Check Memory Usage on remote machine
+# Title Name            : Nagios Bash Script - Disk Check Remote Machine
+# Description           : Nagios Script to Check Disk Usage on remote machine
 # Author                : Praveen Prabhakaran
 # Date                  : 23-Sep-2020
 # Version               : 1.0.0
@@ -28,21 +28,33 @@ reset_blink='\033[25m'
 usage() {
 echo -e "
 
-  SCRIPT:
-      ${0#./*} - Check CPU usage on a remote server
+  SCRIPT: 
+      ${0#./*} 
+            This script helps to checks Disk Usage of a particular mount point
+            on a remote machine and generate following exit code for 
+            OKAY, WARNING and CRITICAL limits set.
 
-  Synopsis:
+            -----------------------------
+            |  Exit Code  |    Status   |
+            -----------------------------
+            |      0      |  OK         |
+            |      1      |  WARNING    |
+            |      2      |  CRITICAL   |
+            -----------------------------
+
+  SYNOPSIS:
       $0 [ OPTIONS ]
 
   Mandatory OPTIONS :
       - t <Target Server>     # Specify Target Server IP address (IPv4)
+      - m <Mount Point>       # Mount point on remote server that needs checking
       - w <Warning Limit>     # To set Warning Limit for the script
       - c <Critical Limit>    # To set Critical Limit for the script
   
   Non-Mandatory OPTIONS:
       - h                     # Help to use the script
   
-  USAGE  ${BLUE}$0${NoColor} ${YELLOW}[ - t <Target Server> ] [ - w <Warning Limit> ] [ - c <Critical Limit> ]${NoColor}
+  USAGE  ${BLUE}$0${NoColor} ${YELLOW}[ - t <Target Server> ] [ -m <Mount Point> ] [ - w <Warning Limit> ] [ - c <Critical Limit> ]${NoColor}
 
 
 "
@@ -77,15 +89,10 @@ valid_ip() {
 
 }
 
-
-
-
 ########## Using getopts to define OPTIONS to be used in the script ##########
+required_options=0 
 
-
-required_options=0            # to get a control on number of required options in script.
-
-while getopts ':t:w:c:h' param
+while getopts ':t:m:w:c:h' param
 do
     case $param in
         t)    if [ ${OPTARG:0:1} == "-"  ]
@@ -107,6 +114,19 @@ do
               required_options=$(( required_options + 1 ))
               # echo ${OPTIND}
               # echo $@
+              ;;
+        m)    if [ ${OPTARG:0:1} == "-"  ]
+              then
+                  echo -e "${RED}ERROR: \"$1\" requires an argument.${NoColor}"
+                  shift
+                  error_status=1
+              else
+                  mount_point=${OPTARG}
+                  shift 2
+              fi
+              OPTIND=1
+              required_options=$(( required_options + 1 ))
+              # echo ${@}
               ;;
         w)    if [ ${OPTARG:0:1} == "-"  ]
               then
@@ -146,16 +166,46 @@ do
 
 done
 
-##### For anything that had error, should display the usage and then exit #####
 [[ $error_status ]] && usage && exit 10
+[[ $required_options != 4 ]] && echo -e "${RED}ERROR: One or more REQUIRED options missing${NoColor}" && usage && exit 10
 
-##### For execution not matching all Mandatory OPTIONS  #####
-[[ $required_options != 3 ]] && echo -e "${RED}ERROR: One or more REQUIRED options missing${NoColor}" && usage && exit 10
-
-
-##### Checking the gathered values #####
-echo "Target Machine  : ${target_server}"
-echo "Warning Limit   : ${warning_limit}"
-echo "Critical Limit  : ${critical_limit}"
+# echo "Target Machine  : ${target_server}"
+# echo "Target Machine  : ${mount_point}"
+# echo "Warning Limit   : ${warning_limit}"
+# echo "Critical Limit  : ${critical_limit}"
 
 
+########## END of getopts ##########
+
+
+
+
+########## Main Section ##########
+##### Set Variables #####
+remote_server_user="ubuntu"                           # Sepecifying Remote User
+
+command_to_run="df -hP ${mount_point} | awk '{ print \$5}' | grep -v "^Use" | sed -e 's/%//g'"
+available_space=$(ssh -o StrictHostKeyChecking=no ${remote_server_user}@${target_server} " ${command_to_run} ")
+
+
+
+
+########## Section to get correct EXIT CODE ##########
+if [ $( echo "$available_space < ${warning_limit}" | bc )  -eq 1 ]
+then
+  echo "Disk OK. Percentage of space used for ${mount_point} disk is $available_space %"
+  exit 0
+else
+  if  [ $( echo "$available_space >= ${warning_limit}" | bc ) -eq 1 ] && \
+      [ $( echo "$available_space < ${critical_limit}"  | bc ) -eq 1 ]
+  then
+    echo "Disk is in Warning State !!! Percentage of space used for ${mount_point} disk is $available_space %"
+    exit 1
+  else
+    if [ $( echo "$available_space >= ${critical_limit} " | bc ) -eq 1 ]
+    then
+      echo "Disk is in Critical State !!! Percentage of space used for ${mount_point} disk is $available_space %"
+      exit 2
+    fi
+  fi
+fi

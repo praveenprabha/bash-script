@@ -1,8 +1,8 @@
 #! /bin/bash
 
 #####################################################
-# Title Name            : CPU Check Bash Script
-# Description           : Script to Check Memory Usage on remote machine
+# Title Name            : Nagios Bash Script - Process Check Remote Machine
+# Description           : Script to Check if particular Process is running on remote machine
 # Author                : Praveen Prabhakaran
 # Date                  : 23-Sep-2020
 # Version               : 1.0.0
@@ -28,26 +28,33 @@ reset_blink='\033[25m'
 usage() {
 echo -e "
 
-  SCRIPT:
-      ${0#./*} - Check CPU usage on a remote server
+  SCRIPT: 
+      ${0#./*} 
+            This script helps to checks if the specified process is running on 
+            remote machine and generate OKAY and CRITICAL status in nagios.
 
-  Synopsis:
+            -----------------------------
+            |  Exit Code  |    Status   |
+            -----------------------------
+            |      0      |  OK         |
+            |      2      |  CRITICAL   |
+            -----------------------------
+
+  SYNOPSIS:
       $0 [ OPTIONS ]
 
   Mandatory OPTIONS :
       - t <Target Server>     # Specify Target Server IP address (IPv4)
-      - w <Warning Limit>     # To set Warning Limit for the script
-      - c <Critical Limit>    # To set Critical Limit for the script
+      - p <Process Name>      # Specify name of one Process that needs to be checked
   
   Non-Mandatory OPTIONS:
       - h                     # Help to use the script
   
-  USAGE  ${BLUE}$0${NoColor} ${YELLOW}[ - t <Target Server> ] [ - w <Warning Limit> ] [ - c <Critical Limit> ]${NoColor}
+  USAGE  ${BLUE}$0${NoColor} ${YELLOW}[ - t <Target Server> ] [ - p <Process Name> ]${NoColor}
 
 
 "
 }
-
 
 ########## Function to validate target IP address for IPv4 Address ##########
 valid_ip() {
@@ -78,14 +85,10 @@ valid_ip() {
 }
 
 
-
-
 ########## Using getopts to define OPTIONS to be used in the script ##########
+required_options=0 
 
-
-required_options=0            # to get a control on number of required options in script.
-
-while getopts ':t:w:c:h' param
+while getopts ':t:p:h' param
 do
     case $param in
         t)    if [ ${OPTARG:0:1} == "-"  ]
@@ -108,30 +111,19 @@ do
               # echo ${OPTIND}
               # echo $@
               ;;
-        w)    if [ ${OPTARG:0:1} == "-"  ]
+        p)    if [ ${OPTARG:0:1} == "-"  ]
               then
                   echo -e "${RED}ERROR: \"$1\" requires an argument.${NoColor}"
                   shift
                   error_status=1
               else
-                  warning_limit=${OPTARG}
-                  shift 2
+                  process_name=${OPTARG}
+                  shift 2 
               fi
               OPTIND=1
               required_options=$(( required_options + 1 ))
-              # echo ${@}
-              ;;
-        c)    if [ ${OPTARG:0:1} == "-"  ]
-              then
-                  echo -e "${RED}ERROR: \"${1}\" requires an argument.${NoColor}"
-                  shift
-                  error_status=1
-              else
-                  critical_limit=${OPTARG}
-                  shift 2
-              fi
-              OPTIND=1
-              required_options=$(( required_options + 1 ))
+              # echo ${OPTIND}
+              # echo $@
               ;;
         h)    usage
               exit 10
@@ -146,16 +138,34 @@ do
 
 done
 
-##### For anything that had error, should display the usage and then exit #####
 [[ $error_status ]] && usage && exit 10
+[[ $required_options != 2 ]] && echo -e "${RED}ERROR: One or more REQUIRED options missing${NoColor}" && usage && exit 10
 
-##### For execution not matching all Mandatory OPTIONS  #####
-[[ $required_options != 3 ]] && echo -e "${RED}ERROR: One or more REQUIRED options missing${NoColor}" && usage && exit 10
+# echo "Target Machine  : ${target_server}"
+# echo "Process Name    : ${process_name}"
+
+########## END of getopts ##########
+
+########## Main Section ##########
 
 
-##### Checking the gathered values #####
-echo "Target Machine  : ${target_server}"
-echo "Warning Limit   : ${warning_limit}"
-echo "Critical Limit  : ${critical_limit}"
+##### Set Variables #####
+remote_server_user="ubuntu"                           # Sepecifying Remote User
+
+
+command_to_run="ps -ef | grep  ${process_name} | grep -qv grep"
+ssh -o StrictHostKeyChecking=no ${remote_server_user}@${target_server} "$command_to_run"
+
+
+########## Section to get correct EXIT CODE ##########
+if [ $? -eq 0 ]
+then
+  echo "${process_name} OK. No action required"
+  exit 0
+else
+  echo "${process_name} NOT OK !!! ${process_name} not running"
+  exit 2
+fi
+
 
 

@@ -1,8 +1,8 @@
 #! /bin/bash
 
 #####################################################
-# Title Name            : CPU Check Bash Script
-# Description           : Script to Check Memory Usage on remote machine
+# Title Name            : Nagios Bash Script - Memory Check Remote Machine
+# Description           : Nagios Script to Check Memory Usage on remote machine
 # Author                : Praveen Prabhakaran
 # Date                  : 23-Sep-2020
 # Version               : 1.0.0
@@ -28,10 +28,20 @@ reset_blink='\033[25m'
 usage() {
 echo -e "
 
-  SCRIPT:
-      ${0#./*} - Check CPU usage on a remote server
+  SCRIPT: 
+      ${0#./*} 
+            This script helps to checks Memory usage on a remote machine and generate 
+            following exit code for OKAY, WARNING and CRITICAL limits set.
 
-  Synopsis:
+            -----------------------------
+            |  Exit Code  |    Status   |
+            -----------------------------
+            |      0      |  OK         |
+            |      1      |  WARNING    |
+            |      2      |  CRITICAL   |
+            -----------------------------
+
+  SYNOPSIS:
       $0 [ OPTIONS ]
 
   Mandatory OPTIONS :
@@ -78,12 +88,8 @@ valid_ip() {
 }
 
 
-
-
 ########## Using getopts to define OPTIONS to be used in the script ##########
-
-
-required_options=0            # to get a control on number of required options in script.
+required_options=0 
 
 while getopts ':t:w:c:h' param
 do
@@ -146,16 +152,44 @@ do
 
 done
 
-##### For anything that had error, should display the usage and then exit #####
 [[ $error_status ]] && usage && exit 10
-
-##### For execution not matching all Mandatory OPTIONS  #####
 [[ $required_options != 3 ]] && echo -e "${RED}ERROR: One or more REQUIRED options missing${NoColor}" && usage && exit 10
 
+# echo "Target Machine  : ${target_server}"
+# echo "Warning Limit   : ${warning_limit}"
+# echo "Critical Limit  : ${critical_limit}"
 
-##### Checking the gathered values #####
-echo "Target Machine  : ${target_server}"
-echo "Warning Limit   : ${warning_limit}"
-echo "Critical Limit  : ${critical_limit}"
+########## END of getopts ##########
 
+
+
+########## Main Section ##########
+
+##### Set Variables #####
+remote_server_user="ubuntu"                           # Sepecifying Remote User
+
+command_to_run="free | awk '/Mem/{printf(\"RAM Usage: %.2f\n\"),\$3/\$2*100}' | awk '{print \$NF}'"
+memory_used_percent=$(ssh -o StrictHostKeyChecking=no ubuntu@${target_server} "$command_to_run")
+     
+
+########## Section to get correct EXIT CODE ##########
+if [ $( echo "$memory_used_percent < ${warning_limit}" | bc ) -eq 1 ]
+then
+    echo "Memory OK. Memory's current used percentage is $memory_used_percent%"
+    exit 0
+
+else
+    if  [ $( echo "$memory_used_percent >= ${warning_limit}"  | bc )  -eq 1 ] && \
+        [ $( echo "$memory_used_percent < ${critical_limit}" | bc )  -eq 1 ]
+    then
+          echo "Memory in Warning State!!! Memory's current used percentage is $memory_used_percent%"
+          exit 1
+    else
+          if [ $( echo "$memory_used_percent >= ${critical_limit}" | bc ) -eq 1 ]
+          then
+              echo "Memory in Critical State !!! Memory's current used percentage is $memory_used_percent%"
+              exit 2
+          fi 
+    fi
+fi
 
