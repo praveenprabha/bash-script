@@ -31,7 +31,6 @@ echo -e "
   Non-Mandatory OPTIONS:
       - h                     # Help to use the script
   
-
   USAGE  ${BLUE}$0${NoColor} ${YELLOW}[ - t <Target Server> ] [ - w <Warning Limit> ] [ - c <Critical Limit> ]${NoColor}
 
 
@@ -128,7 +127,7 @@ do
 done
 
 [[ $error_status ]] && usage && exit 10
-[[ $required_options != 3 ]] && echo -e "${RED}Error: One or more REQUIRED options missing${NoColor}" && usage && exit 10
+[[ $required_options != 3 ]] && echo -e "${RED}ERROR: One or more REQUIRED options missing${NoColor}" && usage && exit 10
 
 echo "Target Machine  : ${target_server}"
 echo "Warning Limit   : ${warning_limit}"
