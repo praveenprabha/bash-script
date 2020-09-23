@@ -1,8 +1,8 @@
 # Bash Scripts from Praveen P
----
 
 
 ## Table of Contents (Optional)
+---
 
 - [Purpose](#purpose)
 - ["getopts" template scripts](#scripts-with-parameter-using-getopts)
@@ -11,11 +11,12 @@
 
 
 ## Purpose
+---
 
 This serves as a repository for all my shell scripts. Still in the process of uploading more scripts.
 
 
-___
+
 ## Scripts with Parameter using "getopts"
 
 Template Script Available :  <a href="getopts_script_template.sh" target="_blank">`getopts_script_template.sh`</a>.
