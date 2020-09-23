@@ -21,6 +21,43 @@ Template Script Available :  <a href="https://github.com/praveenprabha/bash-scri
   - Includes Optional and Mandatory Arguments
   - Feature to ensure that second flag is not accepted as argument for first flag
 
+```sh
+root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script# ./cpu_usage_param.sh -h
+
+
+  SCRIPT:
+      cpu_usage_param.sh
+            This script helps to checks CPU usage on a remote machine and generate
+            following exit code for OKAY, WARNING and CRITICAL limits set.
+
+            -----------------------------
+            |  Exit Code  |    Status   |
+            -----------------------------
+            |      0      |  OK         |
+            |      1      |  WARNING    |
+            |      2      |  CRITICAL   |
+            -----------------------------
+
+  SYNOPSIS:
+      ./cpu_usage_param.sh [ OPTIONS ]
+
+  Mandatory OPTIONS :
+      - t <Target Server>     # Specify Target Server IP address (IPv4)
+      - w <Warning Limit>     # To set Warning Limit for the script
+      - c <Critical Limit>    # To set Critical Limit for the script
+
+  Non-Mandatory OPTIONS:
+      - h                     # Help to use the script
+
+  USAGE  ./cpu_usage_param.sh [ - t <Target Server> ] [ - w <Warning Limit> ] [ - c <Critical Limit> ]
+
+
+
+root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script#
+
+
+```
+
 
 ## Nagios Script
 
