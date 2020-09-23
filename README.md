@@ -14,6 +14,8 @@
 
 This serves as a repository for all my shell scripts. Still in the process of uploading more scripts.
 
+
+___
 ## Scripts with Parameter using "getopts"
 
 Template Script Available :  <a href="getopts_script_template.sh" target="_blank">`getopts_script_template.sh`</a>.
@@ -21,6 +23,10 @@ Template Script Available :  <a href="getopts_script_template.sh" target="_blank
   - Incorporates option for script help which shows how to use the script
   - Includes Optional and Mandatory Arguments
   - Feature to ensure that second flag is not accepted as argument for first flag
+
+
+
+
 
 
 ##### using "-h" to get usage information
@@ -59,6 +65,10 @@ root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script# ./cpu_usage_par
 root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script#
 
 ````
+
+
+
+
 
 ##### error when a mandatory argument is missing
 
@@ -99,9 +109,13 @@ ERROR: "-t" requires an argument.
 root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script# 
 ```
 
+
+
+
+
 ##### error when only attributes are mentioned and not arguments
 _NOTE: second attribute is not considered as the argument for the first attribute_
-```shell
+```Shell
 root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script# ./cpu_usage_param.sh -t -w -c
 ERROR: "-t" requires an argument.
 ERROR: "-w" requires an argument.
@@ -140,6 +154,10 @@ root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script#
 
 ```
 
+
+
+
+
 ##### successful execution
 
 ```shell
@@ -150,6 +168,16 @@ root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script#
 
 ```
 
+
+
+
+
+
+
+
+
+
+___
 ## Nagios Script
 
 Bash Script for following functionality is available. All scripts makes use of SSH to login to remote server and gather the information. Here, the scripts are wriiten with the consideration that there is a passwordless login available from Nagios Server to Target Server. 
