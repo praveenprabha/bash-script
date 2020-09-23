@@ -126,6 +126,7 @@ do
               required_options=$(( required_options + 1 ))
               ;;
         h)    usage
+              exit 10
               ;;
         \?)   echo -e "${RED}ERROR: Invalid Option \"-$OPTARG\" entered${NoColor}"
               error_status=1
