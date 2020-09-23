@@ -178,9 +178,9 @@ root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script#
 
 
 
-___
-## Nagios Script
 
+## Nagios Script
+---
 Bash Script for following functionality is available. All scripts makes use of SSH to login to remote server and gather the information. Here, the scripts are wriiten with the consideration that there is a passwordless login available from Nagios Server to Target Server. 
 
 Following considerations are taken into account for these scripts
