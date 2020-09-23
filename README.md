@@ -23,7 +23,7 @@ Template Script Available :  <a href="getopts_script_template.sh" target="_blank
   - Feature to ensure that second flag is not accepted as argument for first flag
 
 
-### using "-h" to get usage information
+##### using "-h" to get usage information
 ````shell
 root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script# ./cpu_usage_param.sh -h
 
@@ -60,7 +60,7 @@ root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script#
 
 ````
 
-### error when a mandatory argument is missing
+##### error when a mandatory argument is missing
 
 ```shell
 
@@ -99,8 +99,56 @@ ERROR: "-t" requires an argument.
 root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script# 
 ```
 
+##### error when only attributes are mentioned and not arguments
+_NOTE: second attribute is not considered as the argument for the first attribute_
+```shell
+root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script# ./cpu_usage_param.sh -t -w -c
+ERROR: "-t" requires an argument.
+ERROR: "-w" requires an argument.
+ERROR: "-c" requires an argument.
 
 
+  SCRIPT:
+      cpu_usage_param.sh
+            This script helps to checks CPU usage on a remote machine and generate
+            following exit code for OKAY, WARNING and CRITICAL limits set.
+
+            -----------------------------
+            |  Exit Code  |    Status   |
+            -----------------------------
+            |      0      |  OK         |
+            |      1      |  WARNING    |
+            |      2      |  CRITICAL   |
+            -----------------------------
+
+  SYNOPSIS:
+      ./cpu_usage_param.sh [ OPTIONS ]
+
+  Mandatory OPTIONS :
+      - t <Target Server>     # Specify Target Server IP address (IPv4)
+      - w <Warning Limit>     # To set Warning Limit for the script
+      - c <Critical Limit>    # To set Critical Limit for the script
+
+  Non-Mandatory OPTIONS:
+      - h                     # Help to use the script
+
+  USAGE  ./cpu_usage_param.sh [ - t <Target Server> ] [ - w <Warning Limit> ] [ - c <Critical Limit> ]
+
+
+
+root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script#
+
+```
+
+##### successful execution
+
+```shell
+
+root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script# ./cpu_usage_param.sh -t 172.31.47.66  -w 0.5 -c 1
+CPU OK. Current CPU Usage: 0.00
+root@nagios-server:/etc/nagios3/conf.d/my_scripts/nagios_script#
+
+```
 
 ## Nagios Script
 
